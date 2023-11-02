@@ -13,27 +13,16 @@ public class App {
         }
 
         // Check voor aardbevinggebied
-        if (postcode.equals("9679") || postcode.equals("9681") || postcode.equals("9682")) {
+        boolean postcodeCheck = extraBerekener.checkPostcode(postcode);
+        if (!postcodeCheck) {
             return 0.0;
         }
 
         // Kijk wat de rentevasteperiode is
-        double rentePercentage = switch (rentevastePeriode) {
-            case 1 -> 0.02;
-            case 5 -> 0.03;
-            case 10 -> 0.035;
-            case 20 -> 0.045;
-            case 30 -> 0.05;
-            default -> throw new IllegalArgumentException("Ongeldige rentevaste periode");
-        };
+        double rentePercentage = extraBerekener.renteVastePeriode(rentevastePeriode);
 
         // Bereken het maximale te lenen bedrag
-        double maxTeLenen = maandinkomen * 12 * 4.25;
-
-        // Check of er een studieschuld is en pas het maximale te lenen bedrag aan
-        if (heeftStudieschuld == true) {
-            maxTeLenen = maxTeLenen * 0.75;
-        }
+        double maxTeLenen = extraBerekener.maxTelenenBedrag(maandinkomen, heeftStudieschuld);
 
         // Bereken de rente en aflossingsbedrag
         double renteBedrag = maxTeLenen * (rentePercentage / 12);
